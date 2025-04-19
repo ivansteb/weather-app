@@ -1,7 +1,7 @@
 import React from 'react'
 import Container from './Container'
 import WeatherIcon from './WeatherIcon'
-import { WeatherDetailsProps } from './WeatherDetails';
+import WeatherDetails, { WeatherDetailsProps } from './WeatherDetails';
 import { convertKelvinToCelsius } from '@/utils/convertKelvinToCelsius';
 
 type Props = {}
@@ -33,11 +33,11 @@ export default function ForecastWeatherDetail(
   } = props;
 
   return (
-    <Container className='gap-4'>
+    <Container className='gap-4 bg-gray-800/40'>
       {/* Left section */}
       <section className='flex gap-4 items-center px-4'>
         {/* Weather icon and date */}
-        <div>
+        <div className='flex flex-col gap-1 items-center'>
           <WeatherIcon
             iconname={weatherIcon}
           />
@@ -49,7 +49,7 @@ export default function ForecastWeatherDetail(
         <div className='flex flex-col px-4'>
           <span className='text-5xl'>{convertKelvinToCelsius(temperature ?? 0)}°</span>
           <p className='texst-xs space-x-1 whitespace-nowrap'>
-            <span>Sensación térmica: </span>
+            <span className='text-xs space-x-1 whitespace-nowrap'>Sensación térmica: </span>
             <span>{convertKelvinToCelsius(feels_like ?? 0)}°</span>
           </p>
           <p className='capitalize'>{description}</p>
@@ -58,7 +58,7 @@ export default function ForecastWeatherDetail(
 
       {/* Right section */}
       <section className='flex overflow-x-auto justify-between gap-4 px-4 w-full pr-10'>
-        
+        <WeatherDetails {...props} />
       </section>
     </Container>
   )

@@ -1,5 +1,6 @@
 'use client';
 import Container from "@/components/Container";
+import ForecastWeatherDetail from "@/components/ForecastWeatherDetail";
 import Navbar from "@/components/Navbar";
 import WeatherDetails from "@/components/WeatherDetails";
 import WeatherIcon from "@/components/WeatherIcon";
@@ -92,8 +93,28 @@ export default function Home() {
   }
 
   const firstData = data?.list[0];
-
   console.log("data", data);
+  
+  const firstDataForEachDate = (() => {
+    if (!data?.list) return [];
+  
+    const dateMap = new Map<string, any>();
+  
+    data.list.forEach((item) => {
+      const entryDate = new Date(item.dt * 1000).toISOString().split('T')[0];
+      const entryTime = new Date(item.dt * 1000).getHours();
+  
+      // Solo considerar entradas después de las 6:00 AM
+      if (entryTime >= 6) {
+        // Si no hay una entrada para esta fecha o la actual es más temprana, actualizar
+        if (!dateMap.has(entryDate)) {
+          dateMap.set(entryDate, item);
+        }
+      }
+    });
+  
+    return Array.from(dateMap.values());
+  })();
 
   return (
     <div className={`${ralewayFont.variable} flex flex-col gap-4 bg-gray-700 min-h-screen`}>
@@ -167,17 +188,31 @@ export default function Home() {
                     sunset={format(fromUnixTime(data?.city.sunset ?? 1745012323), 'HH:mm')}
                   />
               </Container>
-
-              
-              <Container className="flex-1">
-                  
-              </Container>
             </div>
           </section>
           
           {/* 7 days forecast data */}
           <section className="flex w-full flex-col gap-4">
-            <p className="text-2xl">Pronóstico a 7 días</p>        
+            <p className="text-2xl">Pronóstico a 7 días</p>
+            {firstDataForEachDate.map((item, index) => (
+              <ForecastWeatherDetail 
+                key={index}
+                weatherIcon={item?.weather[0].icon ?? '01d'}
+                description={item?.weather[0].description ?? ''}
+                date={format(parseISO(item?.dt_txt ?? ''), 'dd MMM')}
+                day={format(parseISO(item?.dt_txt ?? ''), 'EEEE')}
+                temperature={item?.main.temp ?? 0}
+                feels_like={item?.main.feels_like ?? 0}
+                temp_min={item?.main.temp_min ?? 0}
+                temp_max={item?.main.temp_max ?? 0}
+                visibility={metersToKilometers(item?.visibility ?? 10000)}
+                humidity={`${item?.main.humidity} %`}
+                windSpeed={`${convertWindSpeed(item?.wind.speed ?? 3.04)}`}
+                airPressure={`${item?.main.pressure} hPa`}
+                sunrise={format(fromUnixTime(data?.city.sunrise ?? 1744971932), 'HH:mm')}
+                sunset={format(fromUnixTime(data?.city.sunset ?? 1745012323), 'HH:mm')}
+              />
+            ))}        
           </section>
         </main>
       </div>
