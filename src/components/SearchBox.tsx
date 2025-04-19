@@ -20,7 +20,7 @@ export default function SearchBox(props: Props) {
             value={props.value}
             type='text' 
             placeholder='Seach location...' 
-            className='px-4 py-2 w-[200px] border border-gray-300 rounded-l-xl focus:outline-none focus:border-blue-500 h-full'
+            className='px-4 py-2 w-[200px] text-sm border border-gray-300 rounded-l-xl focus:outline-none focus:border-blue-500 h-full'
         />
         <button className='px-4 py-[10px] bg-blue-500 text-white rounded-r-xl focus:outline-none hover:bg-blue-500 whitespace-nowrap h-full'>
             <IoSearch />

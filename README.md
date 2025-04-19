@@ -10,7 +10,7 @@ Una elegante aplicación del clima construida con **Next.js**, **React**, **Tail
 - 🔼 [Next.js](https://nextjs.org/) – Framework para SSR y optimización.
 - 🎨 [Tailwind CSS](https://tailwindcss.com/) – Utilidades para estilizado rápido y responsivo.
 - 🟦 [TypeScript](https://www.typescriptlang.org/) – Tipado estático para mayor seguridad en el código.
-- 🌦️ API de clima – Puedes integrar [OpenWeatherMap](https://openweathermap.org/api) u otra de tu preferencia.
+- 🌦️ API de clima – Integrado con [OpenWeatherMap](https://openweathermap.org/api).
 
 ---
 
@@ -28,15 +28,6 @@ Una elegante aplicación del clima construida con **Next.js**, **React**, **Tail
 
 <p align="center">
   <img src="public/screenshot-light.png" alt="Light mode" width="45%"/>
-  <img src="public/screenshot-dark.png" alt="Dark mode" width="45%"/>
 </p>
 
 ---
-
-## ⚙️ Instalación y ejecución
-
-1. **Clona el repositorio**
-
-```bash
-git clone https://github.com/ivansteb/weather-app.git
-cd weather-app
