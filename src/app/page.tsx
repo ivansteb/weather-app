@@ -1,12 +1,15 @@
 'use client';
 import Container from "@/components/Container";
 import Navbar from "@/components/Navbar";
+import WeatherDetails from "@/components/WeatherDetails";
 import WeatherIcon from "@/components/WeatherIcon";
 import { convertKelvinToCelsius } from "@/utils/convertKelvinToCelsius";
+import { convertWindSpeed } from "@/utils/convertWindSpeed";
 import { getDayOrNightIcon } from "@/utils/getDayOrNightIcon";
+import { metersToKilometers } from "@/utils/metersToKilometers";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { format, parseISO } from "date-fns";
+import { format, fromUnixTime, parseISO } from "date-fns";
 import { Raleway } from "next/font/google";
 
 const ralewayFont = Raleway({
@@ -144,7 +147,7 @@ export default function Home() {
               </Container>
             </div>
             <div className="flex gap-4">
-              {/* Left card */}
+              {/* Description of weather and icon */}
               <Container className="w-fit justify-center flex-col px-4 items-center">
                   <p className="text-center capitalize">
                     {firstData?.weather[0].description}
@@ -153,8 +156,19 @@ export default function Home() {
                     iconname={getDayOrNightIcon(firstData?.weather[0].icon ?? '', firstData?.dt_txt ?? '')}
                   />
               </Container>
+              {/* Weather Details */}
+              <Container className="bg-yellow-500/50 px-6 gap-4 justify-between overflow-x-auto">
+                  <WeatherDetails
+                    visibility={metersToKilometers(firstData?.visibility ?? 10000)}
+                    humidity={`${firstData?.main.humidity} %`}
+                    windSpeed={`${convertWindSpeed(firstData?.wind.speed ?? 3.04)}`}
+                    airPressure={`${firstData?.main.pressure} hPa`}
+                    sunrise={format(fromUnixTime(data?.city.sunrise ?? 1744971932), 'HH:mm')}
+                    sunset={format(fromUnixTime(data?.city.sunset ?? 1745012323), 'HH:mm')}
+                  />
+              </Container>
 
-              {/* Right card */}
+              
               <Container className="flex-1">
                   
               </Container>
