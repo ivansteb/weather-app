@@ -12,6 +12,9 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { format, fromUnixTime, parseISO } from "date-fns";
 import { Raleway } from "next/font/google";
+import { useAtom } from "jotai";
+import { placeAtom } from "./atom";
+import { useEffect } from "react";
 
 const ralewayFont = Raleway({
   subsets: ['latin'],
@@ -74,15 +77,22 @@ type WeatherData = {
 
 export default function Home() {
 
-  const { isPending, error, data } = useQuery<WeatherData>({
+  const [place, setPlace] = useAtom(placeAtom);
+
+  const { isPending, error, data, refetch } = useQuery<WeatherData>({
     queryKey: ['repoData'],
     queryFn: async () => {
       const { data } = await axios.get(
-        `https://api.openweathermap.org/data/2.5/forecast?q=santo%20tome&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}&cnt=56`
+        `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}&cnt=56`
       );
       return data;
     }
   })
+
+  // Refetch data cuando cambia la ciudad
+  useEffect(() => {
+    refetch();
+  }, [place, refetch]);
 
   if (isPending) {
     return (
@@ -119,7 +129,7 @@ export default function Home() {
   return (
     <div className={`${ralewayFont.variable} flex flex-col gap-4 bg-gray-700 min-h-screen`}>
       <div className='font-main'>
-        <Navbar />
+        <Navbar location={data?.city.name} />
         <main className="px-3 max-w-7xl mx-auto flex flex-col gap-8 w-full pb-10 pt-4 text-gray-300">
           {/* Today data */}
           <section className="space-y-4">

@@ -4,12 +4,14 @@ import { MdMyLocation, MdWbSunny } from 'react-icons/md'
 import { SlLocationPin } from 'react-icons/sl'
 import SearchBox from './SearchBox'
 import axios from 'axios'
+import { useAtom } from 'jotai'
+import { placeAtom } from '@/app/atom'
 
-type Props = {}
+type Props = { location?: string };
 
 const API_KEY = process.env.NEXT_PUBLIC_WEATHER_KEY;
 
-export default function Navbar({}: Props) {
+export default function Navbar({ location }: Props) {
 
     const [city, setCity] = useState("");
     const [error, setError] = useState("");
@@ -17,26 +19,26 @@ export default function Navbar({}: Props) {
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
 
+    const [place, setPlace] = useAtom(placeAtom);
+
     async function handleInputChange(value: string) {
         setCity(value);
         if (value.length > 0) {
             try {
                 const response = await axios.get(
-                    `https://api.openweathermap.org/data/2.5/find?q=${value}&appid=${process.env.API_KEY}`
+                    `https://api.openweathermap.org/data/2.5/find?q=${value}&appid=${API_KEY}`
                 );
                 const suggestions = response.data.list.map((item: any) => item.name);
                 setSuggestions(suggestions);
+                setError("");
                 setShowSuggestions(true);
-                setError(false);
             } catch (error) {
                 setSuggestions([]);
                 setShowSuggestions(false);
-                setError("No suggestions found");
             }
         } else {
             setSuggestions([]);
             setShowSuggestions(false);
-            setError("No suggestions found");
         }
     }
 
@@ -49,9 +51,9 @@ export default function Navbar({}: Props) {
         e.preventDefault();
         if (suggestions.length == 0) {
             setError("No suggestions found");
-            return;
         } else {
             setError("");
+            setPlace(city);
             setShowSuggestions(false);
         }
     }
@@ -64,14 +66,15 @@ export default function Navbar({}: Props) {
                 <MdWbSunny className='text-3xl mt-1 text-yellow-400' />
             </div>
             <div className='flex gap-4 items-center'>
+                <p className='text-slate-900/80 text-sm'>{location}</p>
                 <MdMyLocation className='text-2xl text-gray-500 hover:opacity-80 cursor-pointer' />
                 <SlLocationPin className='text-3xl text-gray-500 hover:opacity-80 cursor-pointer' />
-                <p className='text-slate-900/80 text-sm'>Santo Tomé</p>
                 <div className='relative'>
+                    {/* Search box */}
                     <SearchBox 
                         value={city}
                         onChange={(e) => handleInputChange(e.target.value)}
-                        onSubmit={(e) => handleSubmitSearch(e)}
+                        onSubmit={handleSubmitSearch}
                     />
                     <SuggestionBox 
                         {...{
@@ -94,16 +97,16 @@ function SuggestionBox({
     handleSuggestionClick,
     error
 }: {
-    suggestions: string[],
-    showSuggestions: boolean,
-    handleSuggestionClick: (suggestion: string) => void,
-    error: string
+    suggestions: string[];
+    showSuggestions: boolean;
+    handleSuggestionClick: (suggestion: string) => void;
+    error: string;
 }) {
     return (
         <>
-            {((showSuggestions && suggestions.length > 0) || !error) && (
-                <ul className='mb-4 bg-white aboslute border top-[44px] left-0 border-gray-300 rounded-md min-w-[200px] flex flex-col gap-1 p-2'>
-                    {error && suggestions.length === 0 && (
+            {((showSuggestions && suggestions.length > 1) || error) && (
+                <ul className='mb-4 bg-white absolute border top-[44px] left-0 border-gray-300 rounded-md min-w-[200px] flex flex-col gap-1 p-2'>
+                    {error && suggestions.length == 0 && (
                         <li className='text-red-500 text-sm'>{error}</li>
                     )}
                     {suggestions.map((suggestion, index) => (
