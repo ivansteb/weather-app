@@ -13,7 +13,7 @@ import axios from "axios";
 import { format, fromUnixTime, parseISO } from "date-fns";
 import { Raleway } from "next/font/google";
 import { useAtom } from "jotai";
-import { placeAtom } from "./atom";
+import { loadingCityAtom, placeAtom } from "./atom";
 import { useEffect } from "react";
 
 const ralewayFont = Raleway({
@@ -78,6 +78,7 @@ type WeatherData = {
 export default function Home() {
 
   const [place, setPlace] = useAtom(placeAtom);
+  const [_, setLoadingCity] = useAtom(loadingCityAtom);
 
   const { isPending, error, data, refetch } = useQuery<WeatherData>({
     queryKey: ['repoData'],
@@ -103,7 +104,6 @@ export default function Home() {
   }
 
   const firstData = data?.list[0];
-  console.log("data", data);
   
   const firstDataForEachDate = (() => {
     if (!data?.list) return [];
