@@ -65,6 +65,27 @@ export default function Navbar({ location }: Props) {
         }
     }
 
+    function handleCurrentLocation() {
+        setLoadingCity(true);
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const { latitude, longitude } = position.coords;
+                try {
+                    const response = await axios.get(
+                        `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
+                    );
+                    setTimeout(() => {
+                        setLoadingCity(false);
+                        setPlace(response.data.name);
+                    }, 300);
+                } catch (error) {
+                    setLoadingCity(false);
+                    setError("Unable to fetch location data");
+                }
+            })
+        }
+    }
+
     return (
     <nav className='shadow-sm sticky top-0 left-0 z-50 bg-white'>
         <div className='h-[80px] w-full flex justify-between items-center max-w-7xl px-3 mx-auto'>
@@ -74,7 +95,11 @@ export default function Navbar({ location }: Props) {
             </div>
             <div className='flex gap-4 items-center'>
                 <p className='text-slate-900/80 text-sm'>{location}</p>
-                <MdMyLocation className='text-2xl text-gray-500 hover:opacity-80 cursor-pointer' />
+                <MdMyLocation 
+                    title="Current location"
+                    onClick={handleCurrentLocation}
+                    className='text-2xl text-gray-500 hover:opacity-80 cursor-pointer' 
+                />
                 <SlLocationPin className='text-3xl text-gray-500 hover:opacity-80 cursor-pointer' />
                 <div className='relative'>
                     {/* Search box */}
