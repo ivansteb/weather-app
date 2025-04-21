@@ -1,7 +1,7 @@
 'use client';
 import Container from "@/components/Container";
 import ForecastWeatherDetail from "@/components/ForecastWeatherDetail";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/Navbar/index";
 import WeatherDetails from "@/components/WeatherDetails";
 import WeatherIcon from "@/components/WeatherIcon";
 import { convertKelvinToCelsius } from "@/utils/convertKelvinToCelsius";
@@ -16,65 +16,13 @@ import { useAtom } from "jotai";
 import { loadingCityAtom, placeAtom } from "./atom";
 import { useEffect } from "react";
 import WeatherSkeleton from "@/components/Skeleton/WeatherSkeleton";
+import { WeatherData } from "@/types/Weather";
 
 const ralewayFont = Raleway({
   subsets: ['latin'],
   weight: '400',
   variable: '--font-raleway',
 });
-
-type WeatherData = {
-  cod: string;
-  message: number;
-  cnt: number;
-  list: {
-    dt: number;
-    main: {
-      temp: number;
-      feels_like: number;
-      temp_min: number;
-      temp_max: number;
-      pressure: number;
-      sea_level: number;
-      grnd_level: number;
-      humidity: number;
-      temp_kf: number;
-    };
-    weather: {
-      id: number;
-      main: string;
-      description: string;
-      icon: string;
-    }[];
-    clouds: {
-      all: number;
-    };
-    wind: {
-      speed: number;
-      deg: number;
-      gust: number;
-    };
-    visibility: number;
-    pop: number;
-    sys: {
-      pod: string;
-    };
-    dt_txt: string;
-  }[];
-  city: {
-    id: number;
-    name: string;
-    coord: {
-      lat: number;
-      lon: number;
-    };
-    country: string;
-    population: number;
-    timezone: number;
-    sunrise: number;
-    sunset: number;
-  };
-};
 
 export default function Home() {
 
