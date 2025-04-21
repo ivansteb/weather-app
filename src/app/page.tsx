@@ -5,6 +5,7 @@ import WeatherSkeleton from "@/components/Skeleton/WeatherSkeleton";
 import { useWeatherData } from "@/hooks/useWeatherData";
 import TodayWeather from "@/components/TodayWeather";
 import SevenDayForecast from "@/components/SevenDayForecast";
+import Footer from "@/components/Footer";
 
 const ralewayFont = Raleway({
   subsets: ['latin'],
@@ -41,6 +42,8 @@ export default function Home() {
             />
           </main>
         )}
+
+        <Footer />
       </div>
     </div>
   );
